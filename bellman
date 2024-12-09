@@ -1,0 +1,93 @@
+import java.util.Scanner;
+public class Bellman 
+{
+public static void bellmanFord(int numvertex, int source, int numedges, int 
+edgemat[ ][ ]) 
+{
+int srcdist[ ] = new int[numvertex + 1];
+int prenode[ ] = new int[numvertex + 1];
+for (int i = 1; i <= numvertex; i++) 
+{
+srcdist[i] = 999; //distance from source to other nodes
+prenode[i]=-1;
+}
+srcdist[source] = 0;
+prenode[source] = source;
+for (int i = 1; i <= numvertex; i++) 
+{
+for (int j = 1; j <= numedges; j++) 
+{
+int u = edgemat[j][0];
+int v = edgemat[j][1];
+int w = edgemat[j][2];
+if (srcdist[v] > (srcdist[u] + w))
+{
+srcdist[v] = srcdist[u] + w; //shortest path from 
+source to node v via node u
+prenode[v] = u;
+}
+}
+}
+// check for negative edge cycle: shortest path exists after round 1
+for (int i = 1; i <= numvertex; i++) 
+{
+for (int j = 1; j <= numedges; j++) 
+{
+int u = edgemat[j][0];
+int v = edgemat[j][1];
+int w = edgemat[j][2];
+if (srcdist[v] > (srcdist[u] + w))
+{
+System.out.println("The Graph has a negative edge 
+cycle, Bellman Ford Fails");
+return;
+}
+}
+}
+for (int i = 1; i <= numvertex; i++) 
+{
+System.out.println("Distance from Node "+ source +" to Node " + i
++ " is " + srcdist[i]+ " via Node "+ prenode[i]);
+}
+}
+public static void main(String... arg) 
+{
+int numvertex = 0;
+int source;
+int numedges = 0;
+Scanner scanner = new Scanner(System.in);
+System.out.print("Enter the number of vertices : ");
+numvertex = scanner.nextInt();
+System.out.print("Enter the number of edges : ");
+numedges = scanner.nextInt();
+int edgemat[][] = new int[numedges + 1][3];
+System.out.println("Enter the Edge Matrix: [from, to, distance]");
+for (int i = 1; i <= numedges; i++) 
+{
+edgemat[i][0] = scanner.nextInt(); //edge from
+edgemat[i][1] = scanner.nextInt(); //edge to
+edgemat[i][2] = scanner.nextInt(); //edge weight
+}
+System.out.print("Enter the source vertex : ");
+source = scanner.nextInt();
+bellmanFord(numvertex, source, numedges,edgemat);
+}
+}
+/*
+Negative Cycle
+1 2 1
+1 3 2
+2 3 1
+3 4 3
+4 2 -6
+Example 1: 
+1 2 4
+1 3 2
+2 3 3
+2 4 2
+2 5 3
+3 2 1
+3 4 4
+3 5 5
+5 4 -5
+ */
